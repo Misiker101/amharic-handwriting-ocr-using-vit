@@ -1,0 +1,7 @@
+*.pth 
+*.bin 
+*.weights 
+temp_sessions/ 
+__pycache__/ 
+.dart_tool/ 
+build/
