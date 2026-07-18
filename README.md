@@ -47,17 +47,15 @@ Ensure a Python 3.9+, a standard virtual environment framework configured alongs
 ## 📂 Repository Structure
 
 ```text
-├── ocr_backend/                # Python FastAPI Backend Server
-│   ├── main.py                 # API Controller Routing & Session State Logic
-│   ├── segmenter.py            # Hybrid A* Path-Planning Segmentation Implementation
-│   ├── recognizer.py           # PyTorch HybridViT Engine & CTC Decoder
-│   ├── vocab.txt               # Amharic Character Vocabulary Mapping Token File
-│   └── temp_sessions/          # [Ignored] Runtime directory for temporary line crops
+ocr_backend/                    # Root Directory (Python FastAPI Backend Server)
+├── main.py                     # API Controller Routing & Session State Logic
+├── segmenter.py                # Hybrid A* Path-Planning Segmentation Implementation
+├── recognizer.py               # PyTorch TrueHybridViT Engine & CTC Decoder
+├── vocab.txt                   # Amharic Character Vocabulary Mapping Token File
+├── .gitignore                  # Configured to filter out heavy model files (*.pth)
+├── README.md                   # System Documentation
 │
-├── ocr_mobile_client/          # Flutter Cross-Platform Application
-│   ├── lib/
-│   │   └── main.py             # State-driven UI & HTTP Network Communication Layer
-│   ├── pubspec.yaml            # Project Dependencies Configuration
-│   └── ...
-│
-└── .gitignore                  # Configured to filter out heavy model files (*.pth)
+└── amharic_ocr_app/            # Sub-Folder (Flutter Mobile Client Application)
+    ├── lib/
+    │   └── main.dart           # State-driven UI & HTTP Network Communication Layer
+    └── pubspec.yaml            # Project Dependencies Configuration
