@@ -6,6 +6,15 @@ from scipy.signal import savgol_filter, find_peaks
 import os
 
 class HybridAStarSegmenter:
+    DEBUG_OVERRIDE_COLOR = None
+
+    PATH_COLOR_CYCLE = [
+        (0, 255, 0),    # green
+        (0, 0, 255),    # red
+        (0, 255, 255),  # yellow
+        (255, 0, 0),    # blue
+    ]
+
     def __init__(self):
         self.debug_maps = {}
 
@@ -114,9 +123,10 @@ class HybridAStarSegmenter:
 
         plt.figure(figsize=(10, 5))
         viz = original.copy()
-        for p in paths:
+        for i, p in enumerate(paths):
             pts = np.column_stack((np.arange(len(p)), p)).astype(np.int32)
-            cv2.polylines(viz, [pts], False, (255, 0, 0), 2)
+            color = self.DEBUG_OVERRIDE_COLOR or self.PATH_COLOR_CYCLE[i % len(self.PATH_COLOR_CYCLE)]
+            cv2.polylines(viz, [pts], False, color, 2)
 
         plt.imshow(cv2.cvtColor(viz, cv2.COLOR_BGR2RGB))
         plt.axis('off')
