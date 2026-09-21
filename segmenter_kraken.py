@@ -136,4 +136,4 @@ class KrakenLineSegmenter:
         plt.axis('off')
         plt.savefig(save_path, bbox_inches='tight')
         plt.close()
-        print(f"Visualization saved to: {save_path}")
+        print(f"Visualization Kraken saved to: {save_path}")
