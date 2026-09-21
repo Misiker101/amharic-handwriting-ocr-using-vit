@@ -24,6 +24,38 @@ from kraken import blla
 from kraken.lib import vgsl
 
 
+@lru_cache(maxsize=None)
+def _resolve_model_path(doi: str) -> str:
+
+    env = os.environ.copy()
+    env["PYTHONUTF8"] = "1"
+
+    result = subprocess.run(
+        ["kraken", "get", doi], capture_output=True, text=True, check=True, env=env
+    )
+    output = result.stdout + result.stderr
+
+    # Match either output style kraken/htrmopo have used across versions:
+    #   "Model dir: /path/to/dir (model files: name.mlmodel)"
+    #   "Model name: /path/to/dir"
+    m = re.search(r"Model dir:\s*(\S+)\s*\(model files:\s*([^)]+)\)", output)
+    if m:
+        model_dir, files = m.group(1), m.group(2)
+        first_file = files.split(",")[0].strip()
+        return os.path.join(model_dir, first_file)
+
+    m = re.search(r"Model name:\s*(\S+)", output)
+    if m:
+        model_dir = m.group(1)
+        candidates = [f for f in os.listdir(model_dir) if f.endswith(".mlmodel")]
+        if candidates:
+            return os.path.join(model_dir, candidates[0])
+
+    raise RuntimeError(
+        f"Could not resolve local path for kraken model '{doi}'. "
+        f"Run `kraken get {doi}` manually and check the output. "
+        f"Raw output was:\n{output}"
+    )
 
 
 class KrakenLineSegmenter:
