@@ -77,7 +77,25 @@ class KrakenLineSegmenter:
         model_path = self.MODEL_LOCAL_PATH_OVERRIDE or _resolve_model_path(self.MODEL_DOI)
         self._model = vgsl.TorchVGSLModel.load_model(model_path)
 
-    
+    def process_image(self, image_path, output_dir):
+        
+        original = cv2.imread(image_path)
+        if original is None:
+            raise ValueError(f"Image not found at {image_path}")
+        h, w = original.shape[:2]
+
+        pil_im = Image.open(image_path).convert("RGB")
+        segmentation = blla.segment(pil_im, model=self._model)
+
+        
+        lines = list(segmentation.lines)
+        lines.sort(key=lambda ln: np.mean([p[1] for p in ln.baseline]))
+
+        self.extract_and_mask(original, lines, output_dir)
+        self.save_viz(original, lines, output_dir)
+
+        vis_path = os.path.join(output_dir, "smoothed_separating_paths.jpg")
+        return vis_path, output_dir
 
     def extract_and_mask(self, original, lines, output_dir):
        
